@@ -10,6 +10,8 @@ DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost 127.0.0.1 backend 0.0.0.0').split()
 
+DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -60,6 +62,12 @@ CSRF_TRUSTED_ORIGINS = [
     "https://localhost:4200",
     "https://127.0.0.1:4200",
 ]
+
+
+# Permitir añadir orígenes extra desde variables de entorno (Render)
+extra_csrf_origins = os.getenv("CSRF_TRUSTED_ORIGINS_EXTRA", "")
+if extra_csrf_origins:
+    CSRF_TRUSTED_ORIGINS += [o.strip() for o in extra_csrf_origins.split(",") if o.strip()]
 
 ROOT_URLCONF = 'config.urls'
 
@@ -166,3 +174,9 @@ if not DEBUG:
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
 X_FRAME_OPTIONS = 'DENY'
+
+
+ALLOWED_HOSTS = os.getenv(
+    "DJANGO_ALLOWED_HOSTS",
+    "localhost,127.0.0.1"
+).split(",")
